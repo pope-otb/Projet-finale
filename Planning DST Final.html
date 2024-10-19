@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login et Choix de Matière</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .login, .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .back-button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #FF6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #FF4500;
+        }
+    </style>
+</head>
+<body>
+    <div class="login">
+        <form id="loginForm">
+            <h1>Login</h1>
+            <label>Username</label>
+            <input type="text" id="username" required>
+            <label>Password</label>
+            <input type="password" id="password" required>
+            <button type="submit">Submit</button>
+            <p id="error-message" style="color: red;"></p>
+        </form>
+    </div>
+
+    <div class="container" id="planningContainer" style="display: none;">
+        <button class="back-button" onclick="window.history.back();">Retour</button>
+        <h1><u>Choisissez une matière</u></h1>
+        <select id="subjectSelect">
+            <option value="">-- Sélectionnez une matière --</option>
+            <option value="maths">Maths</option>
+            <option value="nsi">NSI</option>
+            <option value="svt">SVT</option>
+            <option value="ses">SES</option>
+            <option value="hggsp">HGGSP</option>
+        </select>
+
+        <div id="planning" style="display: none;">
+            <h2>Planning de <span id="selectedSubject"></span></h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jour</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="datesTable">
+                    <!-- Les dates apparaîtront ici -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            if (username === 'w' && password === 's') {
+                alert('Login successful!');
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('planningContainer').style.display = 'block';
+            } else {
+                document.getElementById('error-message').textContent = "Incorrect username or password.";
+            }
+        });
+
+        var subjects = {
+            "maths": ["2024-11-22", "2025-01-31", "2025-04-04", "2025-05-23"],
+            "nsi": ["2024-11-08", "2025-01-10", "2025-03-21"]
+        };
+
+        document.getElementById('subjectSelect').addEventListener('change', function() {
+            var subject = this.value;
+            var planningDiv = document.getElementById('planning');
+            var datesTable = document.getElementById('datesTable');
+            var selectedSubject = document.getElementById('selectedSubject');
+
+            if (subject) {
+                selectedSubject.textContent = subject.toUpperCase();
+                planningDiv.style.display = 'block';
+                datesTable.innerHTML = ''; // Réinitialise le tableau
+
+                subjects[subject].forEach(function(date, index) {
+                    var row = document.createElement('tr');
+                    var dayCell = document.createElement('td');
+                    var dateCell = document.createElement('td');
+                    var inputDate = document.createElement('input');
+                    inputDate.type = 'date';
+                    inputDate.value = date;
+
+                    inputDate.addEventListener('change', function() {
+                        subjects[subject][index] = this.value; // Mise à jour des dates
+                    });
+
+                    dayCell.textContent = "Jour " + (index + 1);
+                    dateCell.appendChild(inputDate);
+                    row.appendChild(dayCell);
+                    row.appendChild(dateCell);
+                    datesTable.appendChild(row);
+                });
+            } else {
+                planningDiv.style.display = 'none'; // Masquer si aucune matière n'est sélectionnée
+            }
+        });
+    </script>
+</body>
+</html>
